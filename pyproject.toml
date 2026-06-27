@@ -1,0 +1,13 @@
+[project]
+name = "feira-garanca-2026"
+version = "0.1.0"
+description = "Repositório do trabalho apresentado pelo clube na feira garança 2026"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "panda3d>=1.10.16",
+    "pyright>=1.1.411",
+    "pyserial>=3.5",
+    "ruff>=0.15.20",
+    "ursina>=7.0.0",
+]

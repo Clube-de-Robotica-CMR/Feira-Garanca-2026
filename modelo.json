@@ -1,0 +1,24 @@
+{
+    "posicao_robo": 
+        {
+            "x": 0,
+            "y": 0
+        },
+
+    "objetos": 
+    [
+        {
+            "id": 0,
+            "posicao": 
+            {
+                "x": 0,
+                "y": 0
+            },
+            "dimensoes": 
+            {
+                "largura": 0,
+                "comprimento": 0
+            }
+        }
+    ]
+}
