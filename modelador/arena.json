@@ -1,0 +1,52 @@
+{
+    "posicao_robo": 
+    {
+        "x": 28,
+        "y": 12
+    },
+
+    "objetos":
+    [
+        {
+            "id": 1,
+            "posicao":
+            {
+                "x": 20,
+                "y": 70
+            },
+            "dimensoes": 
+            {
+                "largura": 10,
+                "comprimento": 12
+            }
+        },
+
+        {
+            "id": 2,
+            "posicao":
+            {
+                "x": 76,
+                "y": 34
+            },
+            "dimensoes": 
+            {
+                "largura": 12,
+                "comprimento": 12
+            }
+        },
+
+        {
+            "id": 3,
+            "posicao":
+            {
+                "x": 10,
+                "y": 29
+            },
+            "dimensoes": 
+            {
+                "largura": 10,
+                "comprimento": 5
+            }
+        }
+    ]
+}
