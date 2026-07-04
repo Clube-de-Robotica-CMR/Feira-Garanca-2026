@@ -5,43 +5,36 @@ class Recebidor:
     def __init__(self, caminho: str):
         self.caminho_json = caminho
         self.texto_limpo = ""
-        # sys.stderr garante que este print apareça no terminal e não polua o pipe
-        print("[PC] Aguardando dados do robô via pipe...", file=sys.stderr)
+        print("[PC] Aguardando dados dos objetos via pipe...", file=sys.stderr)
 
     def ouvir(self) -> bool:
-        """
-        Lê a próxima linha disponível na entrada padrão (sys.stdin).
-        Retorna True se uma linha foi capturada com sucesso.
-        """
-        # Lê apenas uma linha por vez do buffer do sys.stdin
+        """Lê a próxima linha disponível na entrada padrão (Pipe do terminal)."""
         linha = sys.stdin.readline()
         
-        # Se a linha for vazia, significa que o pipe foi fechado (fim da execução)
+        # Se a linha for vazia, significa que o processo do robô encerrou
         if not linha:
             return False
             
         self.texto_limpo = linha.strip()
-        return True
-    
-    def salvar_json(self):
-        """
-        Valida se o texto limpo é um JSON legítimo e atualiza o arquivo da arena.
-        """
-        # Ignora linhas vazias ou mensagens de log que não sejam o JSON do robô
-        if not (self.texto_limpo.startswith('{') and self.texto_limpo.endswith('}')):
-            return
+        
+        # Validação do novo protocolo: o JSON agora é uma lista pura de objetos
+        if self.texto_limpo.startswith('[') and self.texto_limpo.endswith(']'):
+            return True
+            
+        return True # Retorna True para continuar o loop mesmo se receber uma linha de log comum
 
+    def salvar_json(self):
         try:
-            # Valida a sintaxe do JSON
+            # Valida se o texto recebido é um JSON válido
             loads(self.texto_limpo)
 
-            # Salva exatamente a string recebida no arquivo da arena
+            # Salva o array de objetos exatamente como veio
             with open(self.caminho_json, "w", encoding="utf-8") as arquivo:
                 arquivo.write(self.texto_limpo)
                 arquivo.flush()
                 
-            print("[PC] arena.json atualizado com sucesso!", file=sys.stderr)
+            print("[PC] arena.json atualizado via Recebidor!", file=sys.stderr)
 
         except JSONDecodeError as erro:
-            print(f"[PC ERRO] Falha na decodificação do JSON: {erro}", file=sys.stderr)
-            print(f"[PC DADO INVÁLIDO]: {self.texto_limpo}", file=sys.stderr)
+            # Ignora erros de decodificação para prints normais de log que não sejam o JSON
+            pass
