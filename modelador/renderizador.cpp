@@ -49,7 +49,9 @@ void ConfigurarCenario(float lado_da_arena) {
     SetWindowSize(largura_tela, altura_tela);
     SetTargetFPS(60);
 
-    camera.position = (Vector3){ -20.0f, 45.0f, -20.0f }; 
+    // Posiciona a câmera no canto positivo de X e negativo de Z, olhando para o centro.
+    // Isso rotaciona a perspectiva para alinhar o X positivo para a direita da tela.
+    camera.position = (Vector3){ lado_da_arena / 2.0f, 65.0f, -40.0f }; 
     camera.target = (Vector3){ lado_da_arena / 2.0f, 0.0f, lado_da_arena / 2.0f }; 
     camera.up = (Vector3){ 0.0f, 1.0f, 0.0f };                                    
     camera.fovy = 45.0f;
@@ -57,16 +59,18 @@ void ConfigurarCenario(float lado_da_arena) {
 }
 
 void DesenharChaoDaArena(float tamanho, float espacamento) {
+    // Multiplicamos o X por -1 para estender o grid para a direita da tela
     for (float x = 0; x <= tamanho; x += espacamento) {
-        DrawLine3D((Vector3){ x, 0.0f, 0.0f }, (Vector3){ x, 0.0f, tamanho }, LIGHTGRAY);
+        DrawLine3D((Vector3){ -x, 0.0f, 0.0f }, (Vector3){ -x, 0.0f, tamanho }, LIGHTGRAY);
     }
     for (float z = 0; z <= tamanho; z += espacamento) {
-        DrawLine3D((Vector3){ 0.0f, 0.0f, z }, (Vector3){ tamanho, 0.0f, z }, LIGHTGRAY);
+        DrawLine3D((Vector3){ 0.0f, 0.0f, z }, (Vector3){ -tamanho, 0.0f, z }, LIGHTGRAY);
     }
 }
 
 void DesenharObjeto(const ObjetoArena& obj) {
-    Vector3 posicao_3d = { obj.posicao.x, altura_objeto / 2.0f, obj.posicao.y };
+    // Invertemos o obj.posicao.x para -obj.posicao.x para forçar o crescimento para a direita da tela
+    Vector3 posicao_3d = { -obj.posicao.x, altura_objeto / 2.0f, obj.posicao.y };
     
     DrawCube(posicao_3d, obj.dimensao, altura_objeto, obj.dimensao, BLUE);
     DrawCubeWires(posicao_3d, obj.dimensao, altura_objeto, obj.dimensao, DARKBLUE);
@@ -175,7 +179,7 @@ int main() {
                 
                 DesenharChaoDaArena(lado_da_arena, 5.0f);
 
-                DrawLine3D((Vector3){ 0.0f, 0.1f, 0.0f }, (Vector3){ lado_da_arena, 0.1f, 0.0f }, RED);
+                DrawLine3D((Vector3){ 0.0f, 0.1f, 0.0f }, (Vector3){ -lado_da_arena, 0.1f, 0.0f }, RED);
                 DrawLine3D((Vector3){ 0.0f, 0.1f, 0.0f }, (Vector3){ 0.0f, 0.1f, lado_da_arena }, BLUE);
 
                 // DesenharRobo removido daqui

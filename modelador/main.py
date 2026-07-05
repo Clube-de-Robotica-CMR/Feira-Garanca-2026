@@ -8,16 +8,16 @@ def main():
     CAMINHO_ARENA = "./modelador/arena.json"
     CAMINHO_EXECUTAVEL = "./modelador/bin/renderizador"
     
-    if not os.path.exists(CAMINHO_EXECUTAVEL):
-        print(f"[PC ERRO] Executável '{CAMINHO_EXECUTAVEL}' não encontrado!", file=sys.stderr)
-        sys.exit(1)
+    # if not os.path.exists(CAMINHO_EXECUTAVEL):
+    #     print(f"[PC ERRO] Executável '{CAMINHO_EXECUTAVEL}' não encontrado!", file=sys.stderr)
+    #     sys.exit(1)
 
-    print("[PC] Inicializando o renderizador gráfico...", file=sys.stderr)
-    processo_renderizador = subprocess.Popen(
-        [CAMINHO_EXECUTAVEL],
-        stdout=subprocess.DEVNULL,
-        stderr=subprocess.DEVNULL
-    )
+    # print("[PC] Inicializando o renderizador gráfico...", file=sys.stderr)
+    # processo_renderizador = subprocess.Popen(
+    #     [CAMINHO_EXECUTAVEL],
+    #     stdout=subprocess.DEVNULL,
+    #     stderr=subprocess.DEVNULL
+    # )
     
     recebidor = Recebidor(caminho=CAMINHO_ARENA)
     
@@ -31,10 +31,10 @@ def main():
             
     except KeyboardInterrupt:
         print("\n[PC] Interrupção detectada.", file=sys.stderr)
-    finally:
-        if processo_renderizador.poll() is None:
-            print("[PC] Encerrando o renderizador gráfico...", file=sys.stderr)
-            processo_renderizador.terminate()
+    # finally:
+    #     if processo_renderizador.poll() is None:
+    #         print("[PC] Encerrando o renderizador gráfico...", file=sys.stderr)
+    #         processo_renderizador.terminate()
 
 if __name__ == "__main__":
     main()

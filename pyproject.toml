@@ -7,7 +7,6 @@ requires-python = ">=3.11"
 dependencies = [
     "panda3d>=1.10.16",
     "pybricks>=4.0.0",
-    "pybricksdev>=2.3.2",
     "pyright>=1.1.411",
     "pyserial>=3.5",
     "ruff>=0.15.20",

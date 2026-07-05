@@ -13,7 +13,7 @@ run:
 	$(TARGET)
 
 start:
-	uv run python -m modelador.main
+	pybricksdev run ble --name "Chell" "/home/davizera/Dev/robótica/Feira-Garanca-2026/robo/main.py" | uv run python -m modelador.main
 
 renderizador: modelador/renderizador.cpp
 	$(CXX) $(CXXFLAGS) -isystem $(INCLUDE_DIR) $(SRC) $(LIBS) -o $(TARGET)

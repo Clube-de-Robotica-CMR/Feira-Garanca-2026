@@ -1,0 +1,96 @@
+from math import cos, radians, sqrt
+
+from pybricks.parameters import Port
+from pybricks.pupdevices import UltrasonicSensor
+from pybricks.tools import wait
+
+from enviador import Enviador
+from movimentador import Movimentador
+
+
+class Mapeador:
+    def __init__(self, movimentador: Movimentador, enviador: Enviador) -> None:
+        self.movimentador = movimentador
+        self.enviador = enviador
+        self.ultrassom = UltrasonicSensor(Port.C)
+
+        self.dimensao_arena = 900 #mm
+        self.dimensao_robo = 250 #mm
+
+        self.distancia_de_medicao = 10 #cm
+
+        self.objetos_qtd = 0
+
+    def objeto_identificado(self) -> bool:
+        distancia = self.ultrassom.distance()
+        return distancia < (self.dimensao_arena - self.dimensao_robo)
+    
+    def iniciar(self):
+        for i in range(8):
+            self.movimentador.curvar_graus(-90)
+            if self.objeto_identificado():
+                self.mapear(i)
+            self.movimentador.curvar_graus(90)
+            self.movimentador.mover_cm(10)
+            wait(100)
+
+        self.movimentador.mover_cm(-80)
+
+    def distancia_valida(self, distancia: float, angulacao: float):
+        distancia /= 10
+        tolerancia = 3 #cm
+        rad = radians(angulacao)
+        referencia = self.distancia_de_medicao / cos(rad)
+        return abs(referencia - distancia) < tolerancia
+
+    def mapear(self, iteracao: int):
+        distancia_cm = self.ultrassom.distance() / 10.0
+        distancia_a_ser_percorrida = distancia_cm - self.distancia_de_medicao if distancia_cm > 10 else 0
+
+        self.movimentador.mover_cm(distancia_a_ser_percorrida)
+        self.movimentador.resetar_imu()
+
+        self.movimentador.iniciar_curva(1)
+        angulo_direita = 0.0
+        lado_direito = 0.0
+        while self.distancia_valida(self.ultrassom.distance(), self.movimentador.angulacao()):
+            angulo_direita = self.movimentador.angulacao()
+            lado_direito = self.ultrassom.distance() / 10
+            wait(10)
+        self.movimentador.parar()
+        wait(100)
+        self.movimentador.iniciar_curva(-1)
+        wait(50)
+        
+
+        self.movimentador.iniciar_curva(-1)
+        angulo_esquerda = 0.0
+        lado_esquerdo = 0.0
+        while self.distancia_valida(self.ultrassom.distance(), self.movimentador.angulacao()):
+            angulo_esquerda = self.movimentador.angulacao()
+            lado_esquerdo = self.ultrassom.distance() / 10
+            wait(10)
+        self.movimentador.parar()
+        wait(100)
+
+        angulo_total = radians(angulo_direita + angulo_esquerda)
+
+        cosseno = 2 * lado_direito * lado_esquerdo * cos(angulo_total)
+        lado_direito *= lado_direito
+        lado_esquerdo *= lado_esquerdo
+
+        self.objetos_qtd += 1
+        dimensao = sqrt(lado_direito + lado_esquerdo - cosseno)
+        x = 70 - distancia_cm
+        y = 10 + iteracao * 10
+
+        self.enviador.adicionar_objeto(
+            id_obj=self.objetos_qtd,
+            x=x,
+            y=y,
+            dimensao=dimensao
+        )
+        self.enviador.enviar()
+
+        self.movimentador.curvar_graus(angulo_esquerda)
+        self.movimentador.mover_cm(-distancia_a_ser_percorrida)
