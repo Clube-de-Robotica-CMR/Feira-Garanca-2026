@@ -40,7 +40,7 @@ bool json_encontrado = false;
 
 void ConfigurarCenario(float lado_da_arena) {
     SetConfigFlags(FLAG_WINDOW_RESIZABLE);
-    InitWindow(800, 600, "Mapeamento da Arena - Apenas Objetos");
+    InitWindow(800, 600, "Mapeamento da Arena");
 
     int monitor = GetCurrentMonitor();
     int largura_tela = GetMonitorWidth(monitor);
